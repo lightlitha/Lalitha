@@ -14,7 +14,11 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.6",
         "laravel/framework": "^8.0",
-        "laravel/tinker": "^2.0"
+        "laravel/sanctum": "^2.8",
+        "laravel/tinker": "^2.0",
+        "laravel/ui": "^3.1",
+        "nwidart/laravel-modules": "^8.0",
+        "yajra/laravel-datatables-oracle": "^9.14"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
@@ -37,7 +41,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Modules\\": "Modules/"
         }
     },
     "autoload-dev": {

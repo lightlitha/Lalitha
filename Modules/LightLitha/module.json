@@ -1,0 +1,13 @@
+{
+    "name": "LightLitha",
+    "alias": "lightlitha",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\LightLitha\\Providers\\LightLithaServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
