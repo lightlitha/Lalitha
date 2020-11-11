@@ -14,6 +14,8 @@ use App\Models\Employee;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\NextOfKin;
+// Lalitha
+use App\Services\LLRoute\Controller as LLController;
 
 class EmployeeController extends LLController
 {

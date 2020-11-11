@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// Lalitha
+use App\Services\LLRoute\Controller as LLController;
 
-class UserSettingController extends Controller
+class UserSettingController extends LLController
 {
     /**
      * Display a listing of the resource.

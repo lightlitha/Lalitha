@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Models\Contract;
 use Carbon\Carbon;
 use Validator;
+// Lalitha
+use App\Services\LLRoute\Controller as LLController;
 
 class ContractController extends LLController
 {
