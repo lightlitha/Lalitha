@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-use Modules\Lightlitha\Entities\Template\Navigation as DynamicNavigation;
+use App\Services\LLRoute\Navigation as DynamicNavigation;
 use View;
 
 //You can create a BaseController:
@@ -85,6 +85,11 @@ class LLController extends Controller {
           'route' => 'contract.create',
           'param' => 'emp_id=' . $employee->id,
         ],
+        // [
+        //   'name' => 'avatar',
+        //   'route' => 'employees.avatar',
+        //   'param' => 'emp_id=' . $employee->id,
+        // ],
         // [
         //   'name' => 'setting',
         //   'route' => 'contact.show',

@@ -13,7 +13,7 @@
       </div>
       <div class="sidebar-header">
         <div class="user-pic">
-          <img alt="Image placeholder" src="https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/team-4.jpg" class="rounded-circle avatar">
+          <img alt="Image placeholder" src="https://i.pravatar.cc?random" class="rounded-circle avatar">
         </div>
         <div class="user-info">
           <span class="user-name">

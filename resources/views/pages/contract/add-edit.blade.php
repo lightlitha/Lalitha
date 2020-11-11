@@ -46,6 +46,19 @@
           <input type="hidden" name="e_id" value="{{ $employee->id }}">
           <div class="form-row">
             <div class="col-md-6 mb-3">
+              <label for="validationCustom09">Add Contract File</label>
+              <input type="file" class="form-control" id="validationCustom09" name="contract">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 mb-3">
+              @if (!empty($contractfile))
+                <a type="button" class="btn btn-outline-info" href="{{ $contractfile }}">View Contract File</a>
+              @endif
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 mb-3">
               <label for="validationName01">Begin</label>
               @if (!empty($contract->begin))
                 <input type="date" class="form-control" id="validationName01" name="begin" value="{!! $contract->begin !!}">

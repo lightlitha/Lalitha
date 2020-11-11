@@ -3,7 +3,7 @@
 @section('content')
   @extends('layouts.sidenav')
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8 col-sm-12">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -11,6 +11,9 @@
           <li class="breadcrumb-item active" aria-current="page">Show Employee</li>
         </ol>
       </nav>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <img loading="auto" srcset="{{ $avatar }}" alt="..." />
     </div>
   </div>
   <hr/>
@@ -45,6 +48,12 @@
         <form class="needs-validation" novalidate action="{{ route('employees.update', $employee) }}" method="post" enctype="multipart/form-data">
           @csrf
           {{ method_field('PUT') }}
+          <div class="form-row">
+            <div class="col-md-6 mb-3">
+              <label for="validationCustom06">Avatar</label>
+              <input type="file" class="form-control" id="validationCustom09" name="avatar">
+            </div>
+          </div>
           <div class="form-row">
             <div class="col-md-6 mb-3">
               <label for="validationName01">Nickname</label>

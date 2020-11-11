@@ -62,7 +62,11 @@
     <tbody>
       @forelse ($employees as $employee)
         <tr>
-          <th scope="row">#</th>
+          <td scope="row">
+            <div class="user-pic">
+              <img alt="..." src="{!! $employee->getFirstMedia('avatar')->getUrl('thumb') !!}" class="rounded-circle avatar">
+            </div>
+          </td>
           <td>{{ $employee->nickname }}</td>
           <td>{{ $employee->first_name }} {{ $employee->last_name }}</td>
           <td>

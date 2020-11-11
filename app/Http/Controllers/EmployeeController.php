@@ -46,7 +46,6 @@ class EmployeeController extends LLController
             $employeeQuery->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
             $employeeQuery->orWhere('created_at', 'LIKE', '%' . $keyword . '%');
         }
-
         $employees = $employeeQuery->paginate($limit);
         return view('pages.employees.browse', compact('employees'));
     }
@@ -115,8 +114,11 @@ class EmployeeController extends LLController
     public function show(Employee $employee)
     {
         $tabs = parent::employee_tabs($employee);
+        $avatar = empty($employee) ? 
+            null : (empty($employee->getFirstMedia('avatar')) ? 
+                null : $employee->getFirstMedia('avatar')->getUrl('thumb'));
         $active = 'general';
-        return view('pages.employees.read', compact('employee', 'tabs', 'active'));
+        return view('pages.employees.read', compact('employee', 'tabs', 'avatar', 'active'));
     }
 
     /**
@@ -145,6 +147,19 @@ class EmployeeController extends LLController
         // if ($employee->isAdmin()) {
         //     return response()->json(['error' => 'Admin can not be modified'], 403);
         // }
+
+        if(!empty($request->file('avatar'))) {
+            $status = $this->avatarUpload($request, $employee);
+            if(!$status['status']) {
+                return redirect()->back()->with('failure', 'Avatar Problem. ' . $status['message']); 
+            }
+        }
+        if(!empty($request->file('image'))) {
+            return $this->imageUpload($request, $employee);
+        }
+        if(!empty($request->file('video'))) {
+            return $this->videoUpload($request, $employee);
+        }
 
         $validator = Validator::make($request->all(), $this->getValidationRules(false));
         if ($validator->fails()) {
@@ -194,5 +209,47 @@ class EmployeeController extends LLController
             'last_name' => 'required',
             'nickname' =>  $isNew ? 'required|unique:employees' : 'required',
         ];
+    }
+
+    /**
+     * Upload avatar for employee
+     * Spatie
+     * @return array
+     */
+    private function avatarUpload(Request $request, Employee $employee)
+    {
+        try {
+            $file = $request->file('avatar');
+            // $employee->last()->delete();
+            $employee->addMedia($file)
+            ->usingName('Avatar')
+            ->usingFileName('Avatar.' . $file->getClientOriginalExtension())
+            ->withCustomProperties(['type' => 'avatar'])
+            ->toMediaCollection('avatar');
+
+            return ['status' => true];
+        } catch (\Throwable $th) {
+            return ['status' => false, 'message' => 'Allowed image formats(.png, jpeg)'];
+        }
+    }
+
+    /**
+     * Upload image/'s for employee
+     * Spatie
+     */
+    private function imageUpload(Request $request, Employee $employee)
+    {
+        $file = $request->file('image');
+        $employee->addMedia($file)->toMediaCollection();
+    }
+
+    /**
+     * Upload video/'s for employee
+     * Spatie
+     */
+    private function videoUpload(Request $request,  Employee $employee)
+    {
+        $file = $request->file('video');
+        $employee->addMedia($file)->toMediaCollection();
     }
 }

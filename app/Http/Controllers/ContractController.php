@@ -31,8 +31,11 @@ class ContractController extends LLController
         $employee = Employee::find($emp_id);
         $contract = Contract::where('employee_id', $emp_id)->first();
         $tabs = parent::employee_tabs($employee);
+        $contractfile = empty($contract) ? 
+            null : (empty($contract->getFirstMedia('contract')) ? 
+                null : $contract->getFirstMedia('contract')->getUrl()); 
         $active = 'contract';
-        return view('pages.contract.add-edit', compact('employee', 'contract', 'tabs', 'active'));
+        return view('pages.contract.add-edit', compact('employee', 'contract', 'contractfile', 'tabs', 'active'));
     }
 
     /**
@@ -60,21 +63,27 @@ class ContractController extends LLController
         if(!empty($cont)) {
             $cont->begin = empty($contract['begin']) ? null : Carbon::parse($contract['begin'])->format('Y-m-d');
             $cont->end = empty($contract['end']) ? null : Carbon::parse($contract['end'])->format('Y-m-d');
-            $cont->is_signed = ($contract['is_signed'] == 'on') ? true : false;
-            $cont->is_permanent = ($contract['is_permanent'] == 'on') ? true : false;
-            $cont->is_active = ($contract['is_active'] == 'on') ? true : false;
+            $cont->is_signed = empty($contract['is_signed']) ? true : false;
+            $cont->is_permanent = empty($contract['is_permanent']) ? true : false;
+            $cont->is_active = empty($contract['is_active']) ? true : false;
             $cont->note = empty($contract['note']) ? null : $contract['note'];
             $cont->save();
         } else {
-            $nextOK = Contract::create([
+            $cont = Contract::create([
                 'begin' => empty($contract['begin']) ? null : Carbon::parse($contract['begin'])->format('Y-m-d'),
                 'end' => empty($contract['end']) ? null : Carbon::parse($contract['end'])->format('Y-m-d'),
-                'is_signed' => ($contract['is_signed'] == 'on') ? true : false,
-                'is_permanent' => ($contract['is_permanent'] == 'on') ? true : false,
-                'is_active' => ($contract['is_active'] == 'on') ? true : false,
+                'is_signed' => empty($contract['is_signed']) ? true : false,
+                'is_permanent' => empty($contract['is_permanent']) ? true : false,
+                'is_active' => empty($contract['is_active']) ? true : false,
                 'note' => empty($contract['note']) ? null : $contract['note'],
                 'employee_id' => $contract['e_id'],
             ]);
+        }
+        if(!empty($request->file('contract'))) {
+            $status = $this->contractUpload($request, $cont);
+            if(!$status['status']) {
+                return redirect()->back()->with('failure', 'Contract Problem. ' . $status['message']); 
+            }
         }
         return redirect()->back()->with('success', 'Successfully Updated Contract');
     }
@@ -122,5 +131,26 @@ class ContractController extends LLController
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Upload Contract File for employee
+     * Spatie
+     * @return array
+     */
+    private function contractUpload(Request $request, Contract $contract)
+    {
+        try {
+            $file = $request->file('contract');
+            $contract->addMedia($file)
+            ->usingName('Contract')
+            ->usingFileName('Contract.' . $file->getClientOriginalExtension())
+            ->withCustomProperties(['type' => 'contract'])
+            ->toMediaCollection('contract');
+
+            return ['status' => true];
+        } catch (\Throwable $th) {
+            return ['status' => false, 'message' => $th . 'Only Office file formats Allowed (Word, LibreWriter, PDF)'];
+        }
     }
 }
