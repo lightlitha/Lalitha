@@ -14,10 +14,8 @@ use App\Models\Employee;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\NextOfKin;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class EmployeeController extends LLController
+class EmployeeController extends Controller
 {
     const ITEM_PER_PAGE = 10;
     /**
@@ -115,7 +113,7 @@ class EmployeeController extends LLController
      */
     public function show(Employee $employee)
     {
-        $tabs = parent::employee_tabs($employee);
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
         $avatar = empty($employee) ? 
             null : (empty($employee->getFirstMedia('avatar')) ? 
                 null : $employee->getFirstMedia('avatar')->getUrl('thumb'));
@@ -157,15 +155,23 @@ class EmployeeController extends LLController
             }
         }
         if(!empty($request->file('image'))) {
-            return $this->imageUpload($request, $employee);
+            $status = $this->imageUpload($request, $employee);
+            if(!$status['status']) {
+                return redirect()->back()->with('failure', 'Image Problem. ' . $status['message']); 
+            }
+            return redirect()->back()->with('success', 'Added Image\'s. ');
         }
         if(!empty($request->file('video'))) {
-            return $this->videoUpload($request, $employee);
+            $status = $this->videoUpload($request, $employee);
+            if(!$status['status']) {
+                return redirect()->back()->with('failure', 'Image Problem. ' . $status['message']); 
+            }
+            return redirect()->back()->with('success', 'Added Video\'s. ');
         }
 
         $validator = Validator::make($request->all(), $this->getValidationRules(false));
         if ($validator->fails()) {
-            return redirect()->back()->with('success', 'Failed to validate Employee. ');
+            return redirect()->back()->with('failure', 'Failed to validate Employee. ');
         } else {
             try {
                 $employee->nickname = $request->get('nickname');
@@ -179,7 +185,7 @@ class EmployeeController extends LLController
                 $employee->save();
                 return redirect()->back()->with('success', 'Updated Employee. ');
             } catch (\Throwable $th) {
-                return redirect()->back()->with('success', 'Failed to update Employee. ' . $th);
+                return redirect()->back()->with('failure', 'Failed to update Employee. ' . $th);
             }
         }
     }
@@ -193,6 +199,26 @@ class EmployeeController extends LLController
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * 
+     */
+    public function multimedia(Employee $employee)
+    {
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
+        if(empty($employee)) {
+            $avatar = $employeeImages = $employeeVideos = null;
+        } else {
+            $avatar = (empty($employee->getFirstMedia('avatar')) ? 
+                null : $employee->getFirstMedia('avatar')->getUrl('thumb'));
+            $employeeImages = (empty($employee->getMedia('image')) ? 
+                null : $employee->getMedia('image'));
+            $employeeVideos = (empty($employee->getMedia('video')) ? 
+                    null : $employee->getMedia('video'));
+        }
+        $active = 'multimedia';
+        return view('pages.employees.multimedia', compact('employee', 'tabs', 'employeeImages', 'employeeVideos', 'avatar', 'active'));
     }
 
     /**
@@ -241,8 +267,17 @@ class EmployeeController extends LLController
      */
     private function imageUpload(Request $request, Employee $employee)
     {
-        $file = $request->file('image');
-        $employee->addMedia($file)->toMediaCollection();
+        try {
+            $file = $request->file('image');
+            foreach ($file as $key => $value) {
+                $employee->addMedia($value)
+                ->withCustomProperties(['type' => 'image'])
+                ->toMediaCollection('image');   
+            }
+            return ['status' => true];
+        } catch (\Throwable $th) {
+            return ['status' => false, 'message' => $th . ' Allowed image formats(.png, jpeg)'];
+        }
     }
 
     /**
@@ -251,7 +286,14 @@ class EmployeeController extends LLController
      */
     private function videoUpload(Request $request,  Employee $employee)
     {
-        $file = $request->file('video');
-        $employee->addMedia($file)->toMediaCollection();
+        try {
+            $file = $request->file('video');
+            $employee->addMedia($file)
+            ->withCustomProperties(['type' => 'video'])
+            ->toMediaCollection('video');
+            return ['status' => true];
+        } catch (\Throwable $th) {
+            return ['status' => false, 'message' => 'Allowed video formats(.mp4, .mkv, .avi)'];
+        }
     }
 }

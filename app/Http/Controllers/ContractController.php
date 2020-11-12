@@ -7,10 +7,8 @@ use App\Models\Employee;
 use App\Models\Contract;
 use Carbon\Carbon;
 use Validator;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class ContractController extends LLController
+class ContractController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,12 +25,10 @@ class ContractController extends LLController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Employee $employee)
     {
-        $emp_id = $request->get('emp_id');
-        $employee = Employee::find($emp_id);
-        $contract = Contract::where('employee_id', $emp_id)->first();
-        $tabs = parent::employee_tabs($employee);
+        $contract = Contract::where('employee_id', $employee->id)->first();
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
         $contractfile = empty($contract) ? 
             null : (empty($contract->getFirstMedia('contract')) ? 
                 null : $contract->getFirstMedia('contract')->getUrl()); 

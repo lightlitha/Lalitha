@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Contact;
 use Validator;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class ContactController extends LLController
+class ContactController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,12 +24,10 @@ class ContactController extends LLController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Employee $employee)
     {
-        $emp_id = $request->get('emp_id');
-        $employee = Employee::find($emp_id);
-        $contact = Contact::where('employee_id', $emp_id)->first();
-        $tabs = parent::employee_tabs($employee);
+        $contact = Contact::where('employee_id', $employee->id)->first();
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
         $active = 'contact';
         return view('pages.contact.add-edit', compact('employee', 'contact', 'tabs', 'active'));
     }

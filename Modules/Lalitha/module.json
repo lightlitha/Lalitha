@@ -1,0 +1,13 @@
+{
+    "name": "Lalitha",
+    "alias": "lalitha",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Lalitha\\Providers\\LalithaServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

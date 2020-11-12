@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class DashboardController extends LLController
+class DashboardController extends Controller
 {
     public function __construct(){
         parent::__construct();

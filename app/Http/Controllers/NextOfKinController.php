@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\NextOfKin;
 use Validator;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class NextOfKinController extends LLController
+class NextOfKinController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,12 +24,10 @@ class NextOfKinController extends LLController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Employee $employee)
     {
-        $emp_id = $request->get('emp_id');
-        $employee = Employee::find($emp_id);
-        $family = NextOfKin::where('employee_id', $emp_id)->first();
-        $tabs = parent::employee_tabs($employee);
+        $family = NextOfKin::where('employee_id', $employee->id)->first();
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
         $active = 'family';
         return view('pages.family.add-edit', compact('employee', 'family', 'tabs', 'active'));
     }

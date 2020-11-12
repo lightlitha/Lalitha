@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Address;
 use App\Models\Employee;
 use Validator;
-// Lalitha
-use App\Services\LLRoute\Controller as LLController;
 
-class AddressController extends LLController
+class AddressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,12 +24,10 @@ class AddressController extends LLController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Employee $employee)
     {
-        $emp_id = $request->get('emp_id');
-        $employee = Employee::find($emp_id);
-        $address = Address::where('employee_id', $emp_id)->first();
-        $tabs = parent::employee_tabs($employee);
+        $address = Address::where('employee_id', $employee->id)->first();
+        $tabs = parent::navigate_model($employee, 'employee_tabs');
         $active = 'address';
         return view('pages.address.add-edit', compact('employee', 'address', 'tabs', 'active'));
     }
