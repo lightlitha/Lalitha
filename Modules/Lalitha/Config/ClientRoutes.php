@@ -19,7 +19,7 @@ class ClientRoutes
         'name' => 'Dashboard',
       ),
       array(
-        'route' => 'employees.index',
+        'route' => '#',
         'icon' => 'fa fa-user-shield',
         'name' => 'Admin',
         'children' => array(
@@ -36,17 +36,17 @@ class ClientRoutes
         ),
       ),
       array(
-        'route' => 'employees.index',
+        'route' => '#',
         'icon' => 'fa fa-cash-register',
         'name' => 'POS',
         'children' => array(
           [
-            'route' => 'employees.index',
-            'icon' => 'fa fa-dollar-sign',
-            'name' => 'Charges',
+            'route' => 'commissions.index',
+            'icon' => 'fa fa-handshake',
+            'name' => 'Commission',
           ],
           [
-            'route' => 'employees.index',
+            'route' => 'payment_methods.index',
             'icon' => 'fa fa-credit-card',
             'name' => 'Pay Methods',
           ],
@@ -56,6 +56,11 @@ class ClientRoutes
         'route' => 'venue.index',
         'icon' => 'fa fa-door-open',
         'name' => 'Venue',
+      ),
+      array(
+        'route' => 'store_services.index',
+        'icon' => 'fa fa-concierge-bell',
+        'name' => 'Services',
       ),
     ),
 

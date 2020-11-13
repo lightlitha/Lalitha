@@ -36,6 +36,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::apiResource('report', 'App\Http\Controllers\ReportController');
 
     Route::apiResource('venue', 'App\Http\Controllers\VenueController');
+    Route::get('venue-create', 'App\Http\Controllers\VenueController@create')->name('venue.create');
+
+    Route::apiResource('commissions', 'App\Http\Controllers\CommissionController');
+    Route::get('commissions-create', 'App\Http\Controllers\CommissionController@create')->name('commissions.create');
+
+    Route::apiResource('payment_methods', 'App\Http\Controllers\PaymentMethodController');
+    Route::get('payment_methods-create', 'App\Http\Controllers\PaymentMethodController@create')->name('payment_methods.create');
+
+    Route::apiResource('store_services', 'App\Http\Controllers\StoreServiceController');
+    Route::get('store_services-create', 'App\Http\Controllers\StoreServiceController@create')->name('store_services.create');
 });
 
 // Route::group(['middleware' => 'auth:sanctum'], function () {

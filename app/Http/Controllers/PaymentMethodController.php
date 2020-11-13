@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Venue;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Arr;
 use Validator;
 
-class VenueController extends Controller
+
+class PaymentMethodController extends Controller
 {
     const ITEM_PER_PAGE = 10;
     /**
@@ -21,16 +22,17 @@ class VenueController extends Controller
         $limit = Arr::get($searchParams, 'limit', static::ITEM_PER_PAGE);
         $keyword = Arr::get($searchParams, 'keyword', '');
         
-        $venueQuery = Venue::query();
+        $paymentMethodQuery = PaymentMethod::query();
         
         if (!empty($keyword)) {
-            $venueQuery->where('name', 'LIKE', '%' . $keyword . '%');
-            $venueQuery->orWhere('tag', 'LIKE', '%' . $keyword . '%');
-            $venueQuery->orWhere('description', 'LIKE', '%' . $keyword . '%');
+            $paymentMethodQuery->where('name', 'LIKE', '%' . $keyword . '%');
+            $paymentMethodQuery->orWhere('percentage_charge', 'LIKE', '%' . $keyword . '%');
+            $paymentMethodQuery->orWhere('amount_charge', 'LIKE', '%' . $keyword . '%');
+            $paymentMethodQuery->orWhere('description', 'LIKE', '%' . $keyword . '%');
         }
 
-        $venue = $venueQuery->paginate($limit);
-        return view('pages.venue.browse', compact('venue'));
+        $payment_methods = $paymentMethodQuery->paginate($limit);
+        return view('pages.payment_methods.browse', compact('payment_methods'));
     }
 
     /**
@@ -40,10 +42,10 @@ class VenueController extends Controller
      */
     public function create()
     {
-        return view('pages.venue.add');
+        return view('pages.payment_methods.add');
     }
 
-    /**
+        /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -59,18 +61,19 @@ class VenueController extends Controller
         );
     
         if ($validator->fails()) {
-            return redirect()->back()->with('failure', 'Failed to add New Venue. Validate your fields please');
+            return redirect()->back()->with('failure', 'Failed to add New Payment Method. Validate your fields please');
         } else {
             $params = $request->all();
-            $venue = Venue::create([
+            $paymentMethod = PaymentMethod::create([
                 'name' => $params['name'],
-                'tag' => empty($params['tag']) ? null : $params['tag'],
+                'percentage_charge' => empty($params['percentage_charge']) ? 0 : $params['percentage_charge'],
+                'amount_charge' => empty($params['amount_charge']) ? 0 : $params['description'],
                 'is_active' => empty($params['is_active']) ? 
                                     false : ($params['is_active'] == 'on') ? 
                                         true : false,
                 'description' => empty($params['description']) ? null : $params['description'],
             ]);
-            return redirect()->back()->with('success', 'Successfully Added New Venue');   
+            return redirect()->back()->with('success', 'Successfully Added New Payment Method');   
         }
     }
 
@@ -80,9 +83,9 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Venue $venue)
+    public function show(PaymentMethod $payment_method)
     {
-        return view('pages.venue.read', compact('venue'));
+        return view('pages.payment_methods.read', compact('payment_method'));
     }
 
     /**
@@ -103,33 +106,34 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Venue $venue)
+    public function update(Request $request, PaymentMethod $paymentMethod)
     {
-        if ($venue === null) {
-            return redirect()->back()->with('failure', 'venue not found');
+        if ($paymentMethod === null) {
+            return redirect()->back()->with('failure', 'Payment Method not found');
         }
 
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['required']
+                'name' => ['required'],
             ]
         );
 
         if ($validator->fails()) {
-            return redirect()->back()->with('failure', 'problem validating venue. validate your fields');
+            return redirect()->back()->with('failure', 'problem validating Payment Method. validate your fields');
         } else {
             $params = $request->all();
-            $venue->name = $params['name'];
-            $venue->tag = empty($params['tag']) ? null : $params['tag'];
-            $venue->is_active = 
+            $paymentMethod->name = $params['name'];
+            $paymentMethod->percentage_charge = empty($params['percentage_charge']) ? 0 : $params['percentage_charge'];
+            $paymentMethod->amount_charge = empty($params['amount_charge']) ? 0 : $params['amount_charge'];
+            $paymentMethod->is_active = 
                 empty($params['is_active']) ? 
                     false : ($params['is_active'] == 'on') ? 
                         true : false;
-            $venue->description = empty($params['description']) ? null : $params['description'];
-            $venue->save();
+            $paymentMethod->description = empty($params['description']) ? null : $params['description'];
+            $paymentMethod->save();
         }
-        return redirect()->back()->with('success', 'Venue updated');
+        return redirect()->back()->with('success', 'Payment Method updated');
     }
 
     /**

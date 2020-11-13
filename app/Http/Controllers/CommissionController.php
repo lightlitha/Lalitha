@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Venue;
+use App\Models\Commission;
 use Illuminate\Support\Arr;
 use Validator;
 
-class VenueController extends Controller
+class CommissionController extends Controller
 {
     const ITEM_PER_PAGE = 10;
     /**
@@ -21,16 +21,16 @@ class VenueController extends Controller
         $limit = Arr::get($searchParams, 'limit', static::ITEM_PER_PAGE);
         $keyword = Arr::get($searchParams, 'keyword', '');
         
-        $venueQuery = Venue::query();
+        $commissionQuery = Commission::query();
         
         if (!empty($keyword)) {
-            $venueQuery->where('name', 'LIKE', '%' . $keyword . '%');
-            $venueQuery->orWhere('tag', 'LIKE', '%' . $keyword . '%');
-            $venueQuery->orWhere('description', 'LIKE', '%' . $keyword . '%');
+            $commissionQuery->where('name', 'LIKE', '%' . $keyword . '%');
+            $commissionQuery->orWhere('percentage', 'LIKE', '%' . $keyword . '%');
+            $commissionQuery->orWhere('description', 'LIKE', '%' . $keyword . '%');
         }
 
-        $venue = $venueQuery->paginate($limit);
-        return view('pages.venue.browse', compact('venue'));
+        $commissions = $commissionQuery->paginate($limit);
+        return view('pages.commissions.browse', compact('commissions'));
     }
 
     /**
@@ -40,7 +40,7 @@ class VenueController extends Controller
      */
     public function create()
     {
-        return view('pages.venue.add');
+        return view('pages.commissions.add');
     }
 
     /**
@@ -54,23 +54,24 @@ class VenueController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['required']
+                'name' => ['required'],
+                'percentage' => ['required']
             ]
         );
     
         if ($validator->fails()) {
-            return redirect()->back()->with('failure', 'Failed to add New Venue. Validate your fields please');
+            return redirect()->back()->with('failure', 'Failed to add New Commission. Validate your fields please');
         } else {
             $params = $request->all();
-            $venue = Venue::create([
+            $commission = Commission::create([
                 'name' => $params['name'],
-                'tag' => empty($params['tag']) ? null : $params['tag'],
+                'percentage' => $params['percentage'],
                 'is_active' => empty($params['is_active']) ? 
                                     false : ($params['is_active'] == 'on') ? 
                                         true : false,
                 'description' => empty($params['description']) ? null : $params['description'],
             ]);
-            return redirect()->back()->with('success', 'Successfully Added New Venue');   
+            return redirect()->back()->with('success', 'Successfully Added New Commission');   
         }
     }
 
@@ -80,9 +81,9 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Venue $venue)
+    public function show(Commission $commission)
     {
-        return view('pages.venue.read', compact('venue'));
+        return view('pages.commissions.read', compact('commission'));
     }
 
     /**
@@ -103,33 +104,34 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Venue $venue)
+    public function update(Request $request, Commission $commission)
     {
-        if ($venue === null) {
-            return redirect()->back()->with('failure', 'venue not found');
+        if ($commission === null) {
+            return redirect()->back()->with('failure', 'Commission not found');
         }
 
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['required']
+                'name' => ['required'],
+                'percentage' => ['required']
             ]
         );
 
         if ($validator->fails()) {
-            return redirect()->back()->with('failure', 'problem validating venue. validate your fields');
+            return redirect()->back()->with('failure', 'problem validating Commission. validate your fields');
         } else {
             $params = $request->all();
-            $venue->name = $params['name'];
-            $venue->tag = empty($params['tag']) ? null : $params['tag'];
-            $venue->is_active = 
+            $commission->name = $params['name'];
+            $commission->percentage = $params['percentage'];
+            $commission->is_active = 
                 empty($params['is_active']) ? 
                     false : ($params['is_active'] == 'on') ? 
                         true : false;
-            $venue->description = empty($params['description']) ? null : $params['description'];
-            $venue->save();
+            $commission->description = empty($params['description']) ? null : $params['description'];
+            $commission->save();
         }
-        return redirect()->back()->with('success', 'Venue updated');
+        return redirect()->back()->with('success', 'Commission updated');
     }
 
     /**

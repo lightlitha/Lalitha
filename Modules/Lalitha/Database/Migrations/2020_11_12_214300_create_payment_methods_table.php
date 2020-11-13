@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVenuesTable extends Migration
+class CreatePaymentMethodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateVenuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('venues', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('tag')->nullable();
-            $table->boolean('is_available')->default(false)->nullable();
-            $table->boolean('is_active')->default(true)->nullable();
-            $table->string('description')->default('N/A')->nullable();
+            $table->string('name')->unique();
+            $table->decimal('percentage_charge', 8, 2)->nullable()->default(0);
+            $table->decimal('amount_charge', 8, 2)->nullable()->default(0);
+            $table->string('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateVenuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('venues');
+        Schema::dropIfExists('payment_methods');
     }
 }

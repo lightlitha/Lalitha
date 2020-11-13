@@ -30,8 +30,8 @@
     @csrf
     <div class="form-row">
       <div class="col-md-6 mb-3">
-        <label for="validationName01">Nickname</label>
-        <input type="text" class="form-control" id="validationName01" name="nickname" value="" maxlength="30" required>
+        <label for="validationName01">Name</label>
+        <input type="text" class="form-control" id="validationName01" name="name" value="" maxlength="30" required>
         <div class="valid-feedback">
           Looks good!
         </div>
@@ -42,8 +42,8 @@
     </div>
     <div class="form-row">
       <div class="col-md-6 mb-3">
-        <label for="validationName02">First name</label>
-        <input type="text" class="form-control" id="validationName02" name="first_name" value="" maxlength="30" required>
+        <label for="validationName02">Tag</label>
+        <input type="text" class="form-control" id="validationName02" name="tag" value="" maxlength="30">
         <div class="valid-feedback">
           Looks good!
         </div>
@@ -54,25 +54,22 @@
     </div>
     <div class="form-row">
       <div class="col-md-6 mb-3">
-        <label for="validationName03">Last name</label>
-        <input type="text" class="form-control" id="validationName03" name="last_name" value="" maxlength="30" required>
+        <label for="validationName03">Description</label>
+        <textarea class="form-control" id="validationName03" name="description" value=""></textarea>
         <div class="valid-feedback">
           Looks good!
-        </div>
-        <div class="invalid-feedback">
-          Please make sure the are only alphabets and character are less than 30.
         </div>
       </div>
     </div>
     <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="validationCustom03">Date Of Birth</label>
-        <input type="date" class="form-control" id="validationCustom03" name="date_of_birth" required>
-        <div class="invalid-feedback">
-          Employee must be older than 18 years of age.
-        </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="is_active" id="is_active">
+        <label class="form-check-label" for="is_active">
+          Is Venue Usable ?
+        </label>
       </div>
     </div>
+    <div class="form-row">.</div>
     <button class="btn btn-primary" type="submit">Submit form</button>
   </form>
   
