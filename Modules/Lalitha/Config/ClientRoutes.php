@@ -29,9 +29,9 @@ class ClientRoutes
             'name' => 'Employees',
           ],
           [
-            'route' => 'employees.index',
+            'route' => 'roles.index',
             'icon' => 'fa fa-id-card',
-            'name' => 'Roles',
+            'name' => 'Access Control',
           ],
         ),
       ),
@@ -72,45 +72,31 @@ class ClientRoutes
       [
         'name' => 'general',
         'route' => 'employees.show',
-        // 'param' => $employee
       ],
       [
         'name' => 'address',
         'route' => 'address.create',
-        // 'param' => 'emp_id=' . $employee->id,
       ],
       [
         'name' => 'contact',
         'route' => 'contact.create',
-        // 'param' => 'emp_id=' . $employee->id,
       ],
       [
         'name' => 'family',
         'route' => 'next_of_kin.create',
-        // 'param' => 'emp_id=' . $employee->id,
       ],
       [
         'name' => 'contract',
         'route' => 'contract.create',
-        // 'param' => 'emp_id=' . $employee->id,
       ],
       [
         'name' => 'multimedia',
         'route' => 'employee.multimedia',
-        // 'param' => 'i=' . $employee->id,
+      ],
+      [
+        'name' => 'acl',
+        'route' => 'employee.acl',
       ]
-      // [
-      //   'name' => 'setting',
-      //   'route' => 'contact.show',
-      //   'param' => $contact,
-      //   'blade' => 'pages.address.read'
-      // ],
-      // [
-      //   'name' => 'report',
-      //   'route' => 'contact.show',
-      //   'param' => $contact,
-      //   'blade' => 'pages.address.read'
-      // ],
     ]
   );
 

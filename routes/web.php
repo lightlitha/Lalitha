@@ -23,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('employees-create', 'App\Http\Controllers\EmployeeController@create')->name('employees.create');
     Route::get('employees-edit', 'App\Http\Controllers\EmployeeController@edit')->name('employees.edit');
     Route::get('employee-multimedia/{employee}', 'App\Http\Controllers\EmployeeController@multimedia')->name('employee.multimedia');
-
+    
     Route::apiResource('address', 'App\Http\Controllers\AddressController');
     Route::get('address-create/{employee}', 'App\Http\Controllers\AddressController@create')->name('address.create');
     Route::apiResource('contact', 'App\Http\Controllers\ContactController');
@@ -46,6 +46,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::apiResource('store_services', 'App\Http\Controllers\StoreServiceController');
     Route::get('store_services-create', 'App\Http\Controllers\StoreServiceController@create')->name('store_services.create');
+
+    Route::apiResource('roles', 'App\Http\Controllers\RoleController');
+    Route::get('employee-acl/{employee}', 'App\Http\Controllers\RoleController@fetch_access_control')->name('employee.acl');
+    Route::put('employee-update-acl/{employee}', 'App\Http\Controllers\RoleController@update_access_control')->name('employee.update.acl');
 });
 
 // Route::group(['middleware' => 'auth:sanctum'], function () {
